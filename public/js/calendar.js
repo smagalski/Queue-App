@@ -134,7 +134,7 @@ export function renderCalendar() {
         start = findGap(Math.max(state.calStart, nowMins - dur), dur);
         end   = start + dur;
       } else {
-        start = calStart;
+        start = findGap(calStart, dur);
         end   = start + dur;
       }
     } else {

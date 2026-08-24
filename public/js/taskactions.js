@@ -539,6 +539,8 @@ function reorderFlexToAllIndex(draggedId, targetAllIndex) {
 
 export function deleteTaskById(id) {
   state.tasks = state.tasks.filter(t => t.id !== id);
+  hideAllDropdowns();
+  closeBlockDetail();
   save(); render();
 }
 
