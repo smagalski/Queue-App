@@ -654,6 +654,51 @@ export function initAuth() {
     }
   };
 
+  async function _checkApprovalAndEnter(user) {
+    try {
+      const reqRef  = state.db.collection('user_requests').doc(user.uid);
+      const reqSnap = await reqRef.get();
+      if (reqSnap.exists) {
+        const status = reqSnap.data().status;
+        if (status === 'approved') {
+          // fall through to _enterApp below
+        } else if (status === 'pending' || status === 'declined') {
+          _showApprovalScreen(status);
+          if (status === 'pending' && !_approvalUnsub) {
+            _approvalUnsub = reqRef.onSnapshot(snap => {
+              if (snap.data()?.status === 'approved') {
+                if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
+                _enterApp(user);
+              }
+            });
+          }
+          return;
+        } else {
+          _showApprovalScreen('request');
+          return;
+        }
+      } else {
+        _showApprovalScreen('request');
+        return;
+      }
+    } catch(e) {
+      console.error('[Queue] Failed to verify approval status:', e);
+      if (e.code === 'permission-denied') { _showApprovalScreen('request'); return; }
+      // Fail closed on any other error (e.g. transient network issue) — never let
+      // an unverified user fall through into the app. Auto-retry shortly rather
+      // than requiring a manual reload; stop if the user signed out meanwhile.
+      _showApprovalScreen('pending');
+      setTimeout(() => {
+        if (state.auth.currentUser && state.auth.currentUser.uid === user.uid) {
+          _checkApprovalAndEnter(user);
+        }
+      }, 5000);
+      return;
+    }
+
+    _enterApp(user);
+  }
+
   state.auth.onAuthStateChanged(async user => {
     if (user) {
       const signinTs = localStorage.getItem('q_signin_ts');
@@ -663,42 +708,7 @@ export function initAuth() {
         return;
       }
 
-      try {
-        const reqRef  = state.db.collection('user_requests').doc(user.uid);
-        const reqSnap = await reqRef.get();
-        if (reqSnap.exists) {
-          const status = reqSnap.data().status;
-          if (status === 'approved') {
-            // fall through to _enterApp below
-          } else if (status === 'pending' || status === 'declined') {
-            _showApprovalScreen(status);
-            if (status === 'pending' && !_approvalUnsub) {
-              _approvalUnsub = reqRef.onSnapshot(snap => {
-                if (snap.data()?.status === 'approved') {
-                  if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
-                  _enterApp(user);
-                }
-              });
-            }
-            return;
-          } else {
-            _showApprovalScreen('request');
-            return;
-          }
-        } else {
-          _showApprovalScreen('request');
-          return;
-        }
-      } catch(e) {
-        console.error('[Queue] Failed to verify approval status:', e);
-        if (e.code === 'permission-denied') { _showApprovalScreen('request'); return; }
-        // Fail closed on any other error (e.g. transient network issue) — never let
-        // an unverified user fall through into the app. Reload to retry.
-        _showApprovalScreen('pending');
-        return;
-      }
-
-      _enterApp(user);
+      await _checkApprovalAndEnter(user);
     } else {
       if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
       setUserDoc(null);
