@@ -16,7 +16,7 @@ import { renderCalendar, updateCalNowLine, setCalBounds, loadCalBounds } from '.
 
 // taskactions
 import {
-  setAfterAddHook, hideAllDropdowns,
+  setAfterAddHook, setCloseAddFormHook, hideAllDropdowns,
   showPriorityDropdown, changeTaskPriority,
   showCategoryDropdown, changeTaskCategory,
   showSchedDropdown, hideSchedDropdown, sdSetAnchor, sdCheckSave, commitSchedEdit, convertToFlex,
@@ -39,7 +39,7 @@ import {
 } from './breaks.js';
 
 // sidequest
-import { openSidequest, endSidequest, _afterAddFlexTask } from './sidequest.js';
+import { openSidequest, endSidequest, _afterAddFlexTask, cancelSidequestPending } from './sidequest.js';
 
 // endday
 import {
@@ -104,6 +104,7 @@ setRenderHooks({ renderCalendar, updateBreakUI });
 
 // taskactions ← _afterAddFlexTask (sidequest)
 setAfterAddHook(_afterAddFlexTask);
+setCloseAddFormHook(cancelSidequestPending);
 
 // ── Expose window globals (for inline onclick="" attributes) ───────────────
 
@@ -219,8 +220,12 @@ document.addEventListener('keydown', e => {
   if (wupOverlay && wupOverlay.classList.contains('active')) { _wupMaybeLater(); return; }
   const settingsOverlay = document.getElementById('settingsOverlay');
   if (settingsOverlay && settingsOverlay.classList.contains('active')) { closeSettings(); return; }
+  const addFormOverlay = document.getElementById('addFormOverlay');
+  if (addFormOverlay && addFormOverlay.classList.contains('active')) { closeAddForm(); return; }
+  const sidequestOverlay = document.getElementById('sidequestOverlay');
+  if (sidequestOverlay && sidequestOverlay.classList.contains('active')) { endSidequest(); return; }
   // Close any open overlay that has a dismiss button/class
-  ['addFormOverlay', 'addSchedFormOverlay', 'sidequestOverlay',
+  ['addSchedFormOverlay',
    'endDayOverlay', 'dayOffOverlay', 'historyOverlay', 'recurringOverlay',
    'gcalOverlay', 'mobileActionSheetOverlay', 'mobileTaskEditOverlay',
    'blockDetailOverlay', 'wupPromptOverlay',

@@ -303,7 +303,12 @@ export async function fetchGcalEvents() {
 
     const results = await Promise.all(calendars.map(c => fetchCal(c.id)));
 
-    // 3. Merge, deduplicate by id, filter out all-day and declined events
+    // 3. Merge, deduplicate by id, filter out all-day, declined, and already-imported events
+    const alreadyImported = new Set(
+      [...state.tasks, ...state.doneTasks]
+        .filter(t => t.gcalEventId)
+        .map(t => t.gcalEventId)
+    );
     const seen   = new Set();
     const events = [];
     for (const items of results) {
@@ -311,6 +316,7 @@ export async function fetchGcalEvents() {
         if (seen.has(e.id)) continue;
         seen.add(e.id);
         if (!e.start || !e.start.dateTime) continue; // skip all-day
+        if (alreadyImported.has(e.id)) continue; // skip events already imported today
         // Skip events the user declined
         const selfAttendee = (e.attendees || []).find(a => a.self);
         if (selfAttendee && selfAttendee.responseStatus === 'declined') continue;
@@ -393,13 +399,14 @@ export function importGcalTasks() {
     const endMins   = rawEnd > startMins ? rawEnd : startMins + 30;
     const dur       = endMins - startMins;
     state.tasks.push({
-      id:        Date.now() + count,
-      type:      'scheduled',
-      title:     (e.summary || 'Calendar Event').slice(0, 120),
-      addedAt:   Date.now(),
-      startTime: `${dp}T${fmtMins(startMins)}`,
-      endTime:   `${dp}T${fmtMins(endMins)}`,
-      duration:  dur,
+      id:          Date.now() + count,
+      type:        'scheduled',
+      title:       (e.summary || 'Calendar Event').slice(0, 120),
+      addedAt:     Date.now(),
+      startTime:   `${dp}T${fmtMins(startMins)}`,
+      endTime:     `${dp}T${fmtMins(endMins)}`,
+      duration:    dur,
+      gcalEventId: e.id,
     });
     count++;
   });

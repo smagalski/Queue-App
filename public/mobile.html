@@ -188,6 +188,20 @@
   </div><!-- /.settings-inner -->
 </div><!-- /#settingsOverlay -->
 
+<!-- APPROVAL SCREEN (pending / declined) -->
+<div id="approvalScreen" class="hidden">
+  <div class="approval-box">
+    <div class="approval-logo">Queue</div>
+    <div id="approvalSpinner" class="approval-spinner"></div>
+    <div class="approval-title" id="approvalTitle">Waiting for approval</div>
+    <div class="approval-body" id="approvalBody">
+      Your request to join Queue has been sent.<br>You'll be let in as soon as it's approved.
+    </div>
+    <button class="approval-request-btn" id="approvalRequestBtn" onclick="requestAccess()" style="display:none">Request Access</button>
+    <button class="approval-cancel" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
 <!-- AUTH SCREEN -->
 <div id="authScreen">
   <div class="auth-box">

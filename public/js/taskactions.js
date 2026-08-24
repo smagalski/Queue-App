@@ -6,9 +6,11 @@ import { render, isScheduled, getSorted, getAllSorted, closeBlockDetail } from '
 import { getCategoryForTask, renderCategoryTally } from './categories.js';
 import { getSmartTime, setSmartTime } from './utils.js';
 
-// Hook for _afterAddFlexTask — set by main.js after sidequest.js imports
+// Hooks — set by main.js after sidequest.js imports, to avoid a circular import
 let _afterAddHook = () => {};
 export function setAfterAddHook(fn) { _afterAddHook = fn; }
+let _onCloseAddFormHook = () => {};
+export function setCloseAddFormHook(fn) { _onCloseAddFormHook = fn; }
 
 // ── Dropdown helpers ───────────────────────────────────────────────────────
 
@@ -32,6 +34,7 @@ export function hideAllDropdowns() {
 
 export function showPriorityDropdown(taskId, event) {
   event.stopPropagation();
+  hideAllDropdowns();
   state.pdTargetId = taskId;
   openDropdown(document.getElementById('priorityDropdown'), event.target.getBoundingClientRect(), 100);
 }
@@ -226,6 +229,7 @@ export function openAddForm() {
 
 export function closeAddForm() {
   state.addOpen = false;
+  _onCloseAddFormHook();
   document.getElementById('addFormOverlay').classList.remove('active');
   // Restore form if it was in sidequest mode
   const modal = document.getElementById('addFormInner');

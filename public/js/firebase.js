@@ -2,7 +2,7 @@ import { state } from './state.js';
 import { firebaseConfig, DEFAULT_CATEGORY_RULES, GCAL_DESKTOP_CLIENT_ID, GCAL_DESKTOP_CLIENT_SECRET, APP_VERSION, APP_DEPLOYED, APP_CHANGES } from './constants.js';
 import { renderClockDisplay } from './utils.js';
 import { esc } from './utils.js';
-import { setSyncStatus, load } from './persistence.js';
+import { setSyncStatus, load, save } from './persistence.js';
 import { render } from './render.js';
 import { renderCategoryManager, getStressWeights, _renderStressCatList } from './categories.js';
 import { checkDayOffFirestore, checkDayEndedFirestore } from './endday.js';
@@ -532,6 +532,10 @@ export function toggleSync(enabled) {
   state.syncEnabled = !!enabled;
   if (enabled) {
     localStorage.removeItem(`q_sync_off_${uid}`);
+    // Push whatever was edited locally while sync was off up to Firestore first —
+    // otherwise the listener load() attaches below fires with the old snapshot
+    // and clobbers those local-only edits.
+    save();
     load(); // (re-)establish Firestore listener
   } else {
     localStorage.setItem(`q_sync_off_${uid}`, '1');
@@ -686,7 +690,12 @@ export function initAuth() {
           return;
         }
       } catch(e) {
+        console.error('[Queue] Failed to verify approval status:', e);
         if (e.code === 'permission-denied') { _showApprovalScreen('request'); return; }
+        // Fail closed on any other error (e.g. transient network issue) — never let
+        // an unverified user fall through into the app. Reload to retry.
+        _showApprovalScreen('pending');
+        return;
       }
 
       _enterApp(user);
