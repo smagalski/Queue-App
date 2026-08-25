@@ -16,6 +16,13 @@ let _sqPending    = false;
 let _sqInterruptedId       = null;
 let _sqInterruptedCalStart = null;
 
+// Called when the add-form is dismissed without adding a task (Escape, ✕, backdrop
+// click) — clears a pending "next add becomes a sidequest" flag so an unrelated
+// later task doesn't silently get turned into one.
+export function cancelSidequestPending() {
+  _sqPending = false;
+}
+
 export function openSidequest() {
   _sqPending = true;
   // Snapshot the current NOW task before the add-form opens and render() runs

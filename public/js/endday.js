@@ -456,6 +456,10 @@ export function openHistoryOverlay() {
       const dates = [];
       const earliestDoc = snap.docs.length ? snap.docs[snap.docs.length - 1].data().date : null;
 
+      // Today's own record (if any) is never a "gap" day — show it first when present.
+      const todayStr = `${todayY}-${pad2(todayM+1)}-${pad2(todayD)}`;
+      if (docMap[todayStr]) dates.push(todayStr);
+
       if (earliestDoc) {
         const [ey, em, ed] = earliestDoc.split('-').map(Number);
         const baseDate  = new Date(todayY, todayM, todayD);

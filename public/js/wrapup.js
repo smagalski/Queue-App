@@ -2,6 +2,7 @@ import { state } from './state.js';
 import { DEFAULT_CATEGORY_RULES } from './constants.js';
 import { todayPstDateStr, getPST, parseDateLocalMins, fmtTimePST, fmtMins, pad2, esc } from './utils.js';
 import { save } from './persistence.js';
+import { render } from './render.js';
 import { getCategoryForTask } from './categories.js';
 import { prevDateStr, computeStreak, renderStreak, getStreakCount, refreshStreak } from './streak.js';
 
@@ -580,6 +581,7 @@ export async function commitWrapUp() {
   document.getElementById('wupOverlay').classList.remove('active');
   _wup = null;
   refreshStreak();
+  render();
 }
 
 function _recomputeWrapUpReport(doneTasks, catOverrides) {

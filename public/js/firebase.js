@@ -2,7 +2,7 @@ import { state } from './state.js';
 import { firebaseConfig, DEFAULT_CATEGORY_RULES, GCAL_DESKTOP_CLIENT_ID, GCAL_DESKTOP_CLIENT_SECRET, APP_VERSION, APP_DEPLOYED, APP_CHANGES } from './constants.js';
 import { renderClockDisplay } from './utils.js';
 import { esc } from './utils.js';
-import { setSyncStatus, load } from './persistence.js';
+import { setSyncStatus, load, save } from './persistence.js';
 import { render } from './render.js';
 import { renderCategoryManager, getStressWeights, _renderStressCatList } from './categories.js';
 import { checkDayOffFirestore, checkDayEndedFirestore } from './endday.js';
@@ -532,6 +532,10 @@ export function toggleSync(enabled) {
   state.syncEnabled = !!enabled;
   if (enabled) {
     localStorage.removeItem(`q_sync_off_${uid}`);
+    // Push whatever was edited locally while sync was off up to Firestore first —
+    // otherwise the listener load() attaches below fires with the old snapshot
+    // and clobbers those local-only edits.
+    save();
     load(); // (re-)establish Firestore listener
   } else {
     localStorage.setItem(`q_sync_off_${uid}`, '1');
@@ -650,6 +654,51 @@ export function initAuth() {
     }
   };
 
+  async function _checkApprovalAndEnter(user) {
+    try {
+      const reqRef  = state.db.collection('user_requests').doc(user.uid);
+      const reqSnap = await reqRef.get();
+      if (reqSnap.exists) {
+        const status = reqSnap.data().status;
+        if (status === 'approved') {
+          // fall through to _enterApp below
+        } else if (status === 'pending' || status === 'declined') {
+          _showApprovalScreen(status);
+          if (status === 'pending' && !_approvalUnsub) {
+            _approvalUnsub = reqRef.onSnapshot(snap => {
+              if (snap.data()?.status === 'approved') {
+                if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
+                _enterApp(user);
+              }
+            });
+          }
+          return;
+        } else {
+          _showApprovalScreen('request');
+          return;
+        }
+      } else {
+        _showApprovalScreen('request');
+        return;
+      }
+    } catch(e) {
+      console.error('[Queue] Failed to verify approval status:', e);
+      if (e.code === 'permission-denied') { _showApprovalScreen('request'); return; }
+      // Fail closed on any other error (e.g. transient network issue) — never let
+      // an unverified user fall through into the app. Auto-retry shortly rather
+      // than requiring a manual reload; stop if the user signed out meanwhile.
+      _showApprovalScreen('pending');
+      setTimeout(() => {
+        if (state.auth.currentUser && state.auth.currentUser.uid === user.uid) {
+          _checkApprovalAndEnter(user);
+        }
+      }, 5000);
+      return;
+    }
+
+    _enterApp(user);
+  }
+
   state.auth.onAuthStateChanged(async user => {
     if (user) {
       const signinTs = localStorage.getItem('q_signin_ts');
@@ -659,37 +708,7 @@ export function initAuth() {
         return;
       }
 
-      try {
-        const reqRef  = state.db.collection('user_requests').doc(user.uid);
-        const reqSnap = await reqRef.get();
-        if (reqSnap.exists) {
-          const status = reqSnap.data().status;
-          if (status === 'approved') {
-            // fall through to _enterApp below
-          } else if (status === 'pending' || status === 'declined') {
-            _showApprovalScreen(status);
-            if (status === 'pending' && !_approvalUnsub) {
-              _approvalUnsub = reqRef.onSnapshot(snap => {
-                if (snap.data()?.status === 'approved') {
-                  if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
-                  _enterApp(user);
-                }
-              });
-            }
-            return;
-          } else {
-            _showApprovalScreen('request');
-            return;
-          }
-        } else {
-          _showApprovalScreen('request');
-          return;
-        }
-      } catch(e) {
-        if (e.code === 'permission-denied') { _showApprovalScreen('request'); return; }
-      }
-
-      _enterApp(user);
+      await _checkApprovalAndEnter(user);
     } else {
       if (_approvalUnsub) { _approvalUnsub(); _approvalUnsub = null; }
       setUserDoc(null);

@@ -257,8 +257,14 @@ export function addCategory() {
 
 export function deleteCategory(catId) {
   state.categoryRules = state.categoryRules.filter(c => c.id !== catId);
+  // Clear the override on any task pointing at the now-deleted category so it
+  // doesn't keep showing the dangling internal id instead of a real name.
+  for (const t of [...state.tasks, ...state.doneTasks]) {
+    if (t.categoryOverride === catId) delete t.categoryOverride;
+  }
   _saveCategoryRules();
   renderCategoryManager();
+  renderCategoryTally();
 }
 
 // ── Data clearing ──────────────────────────────────────────────────────────

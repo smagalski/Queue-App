@@ -3,7 +3,6 @@ import { DEFAULT_DUR } from './constants.js';
 import { getPST, todayPstDateStr, parseDateLocalMins, fmtMins, pad2, fmtDuration } from './utils.js';
 import { save } from './persistence.js';
 import { render, isScheduled, getSorted, getScheduled, taskTimeLabel, openBlockDetail } from './render.js';
-import { renderCategoryTally } from './categories.js';
 
 // ── Calendar helpers ───────────────────────────────────────────────────────
 
@@ -44,9 +43,10 @@ function startCalTitleEdit(blockTask, isDone, spanEl) {
       task.title = newTitle;
       delete task.categoryOverride;
       save();
+      render(); // refresh the task-list panel too, not just the calendar block
+    } else {
+      renderCalendar();
     }
-    renderCalendar();
-    renderCategoryTally();
   };
   input.addEventListener('blur', commit, { once: true });
   input.addEventListener('keydown', e => {
@@ -134,7 +134,7 @@ export function renderCalendar() {
         start = findGap(Math.max(state.calStart, nowMins - dur), dur);
         end   = start + dur;
       } else {
-        start = calStart;
+        start = findGap(calStart, dur);
         end   = start + dur;
       }
     } else {
