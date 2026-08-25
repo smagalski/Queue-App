@@ -17,14 +17,20 @@ export const CAT_TALLY_COLORS = ['#7ec8e3','#9863f3','#f0d060','#7fd4a8','#ffaa6
 
 export const STRESS_DEFAULTS = { hours: 6, volume: 2, urgency: 1 };
 
-export const APP_VERSION  = '0.2.2';
-export const APP_DEPLOYED = 'May 15, 2026';
+export const APP_VERSION  = '0.3.0';
+export const APP_DEPLOYED = 'August 24, 2026';
 export const APP_CHANGES  = [
-  'Fix: editing a task and marking it done no longer leaves dropdowns stuck open',
-  'Fix: desktop overlay now shows the correct tasks for the signed-in user',
-  'Fix: sidequests now properly split the interrupted task (first half logged, second half resumed)',
-  'Sidequest form no longer shows priority (irrelevant — sidequests become scheduled events)',
-  'Sidequest overlay and form are now pink',
+  'Fix: flex tasks no longer overlap scheduled tasks on the calendar',
+  'Fix: deleting a task now closes any dropdown left open on it',
+  'Fix: mobile sign-out no longer crashes to a blank screen',
+  'Fix: canceling "Add Sidequest" no longer turns the next task add into a sidequest',
+  'Fix: renaming a task from the calendar now updates the task list immediately',
+  "Fix: Day History now shows today's entry right after End Day",
+  'Fix: closing the wrap-up wizard now refreshes the task list',
+  'Fix: re-enabling sync no longer overwrites edits made while sync was off',
+  'Fix: Google Calendar import no longer creates duplicates on re-import',
+  'Fix: deleting a category no longer leaves tasks with a broken category badge',
+  'Sign-in approval check now auto-retries on transient network errors',
 ];
 
 export const GCAL_CLIENT_ID = '98725644783-jrc447s324kbmc1060c8ic5f7crm75js.apps.googleusercontent.com';

@@ -1,11 +1,11 @@
 {
-  "version": "0.1.22",
-  "notes": "Time zone display: current TZ shown next to the clock. Time zone setting in Account preferences (manual override). Clock visible in both tabs on mobile. Download the Mac App link in the gear menu.\n\n⚠️ This app is a work in progress and may experience errors.",
-  "pub_date": "2026-05-11T00:00:00Z",
+  "version": "0.3.0",
+  "notes": "Fix: flex tasks no longer overlap scheduled tasks on the calendar\nFix: deleting a task now closes any dropdown left open on it\nFix: mobile sign-out no longer crashes to a blank screen\nFix: canceling \"Add Sidequest\" no longer turns the next task add into a sidequest\nFix: renaming a task from the calendar now updates the task list immediately\nFix: Day History now shows today's entry right after End Day\nFix: closing the wrap-up wizard now refreshes the task list\nFix: re-enabling sync no longer overwrites edits made while sync was off\nFix: Google Calendar import no longer creates duplicates on re-import\nFix: deleting a category no longer leaves tasks with a broken category badge\nSign-in approval check now auto-retries on transient network errors\n\n⚠️ This app is a work in progress and may experience errors.",
+  "pub_date": "2026-08-25T00:00:00Z",
   "platforms": {
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZnpsRGtodXF6dUlRam9OOGx6dHdRdTBRZXN0Si9nRG16aUxvaThkNHBEb01US3FaRzBqTVJUOWNSQW1tQzRkSk9kc1NGeUVKVTlvQlFGQ1h6OWg4Uk9LV3dwQ1h3Z0FBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4NTQwNDY0CWZpbGU6UXVldWVfMC4xLjIyX3g2NC5hcHAudGFyLmd6CmVuSFoxRkoyRGFQRWduVk5LcXJseFkxeU5LUFhkMC9JTERNWkNaRTI3ajFNZzRKamt4cE5HSHYzS1dpbGNhRHZRSk45MkdMamJDdVk0d0xjWFlSREJ3PT0K",
-      "url": "https://github.com/smagalski/Queue-App/releases/download/v0.1.22/Queue_0.1.22_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTV2dMNkdBaUdScDJ0cVlNclJTcGVUK25ZTDREMjllNTJzREc5UWNMWWttSWRtbnFnU0xRTVNYeGxpdExWdld4MzdCL0F5ZW9NQ0tCVWd2ZStIS1BvVVJMRCtBRTVZM3cwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg3NjE4MDQ3CWZpbGU6UXVldWVfMC4zLjBfeDY0LmFwcC50YXIuZ3oKRzNCRm1KYXNaYmJESFJDVzl5MC9POWg4SmpVNXl6U20vNE5HS3hGL3RrMVN2cUVabzhYT1dWQm4wVXk2empwWEVZb2UzTUhEMkFnbytJY0JDTjlYQnc9PQo=",
+      "url": "https://github.com/smagalski/Queue-App/releases/download/v0.3.0/Queue_0.3.0_x64.app.tar.gz"
     }
   }
 }
