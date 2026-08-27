@@ -1,6 +1,6 @@
 import { state } from './state.js';
 import { DONE_TTL, DEFAULT_DUR, P_COLORS, P_LABELS, P_COLS, SCHED_COL, CAT_TALLY_COLORS } from './constants.js';
-import { getPST, parseDateLocalMins, fmtTimePST, fmtEndTime, endTimeClass, fmtDuration, minsUntil, esc, pad2, fmtMins, timeAgo, msMinsToCalMins, todayPstDateStr } from './utils.js';
+import { getPST, parseDateLocalMins, fmtTimePST, fmtEndTime, endTimeClass, fmtDuration, minsUntil, esc, pad2, fmtMins, timeAgo, msMinsToCalMins, todayPstDateStr, isDoneToday } from './utils.js';
 import { purgeDone, save } from './persistence.js';
 import { getCategoryForTask, renderCategoryTally } from './categories.js';
 
@@ -113,6 +113,17 @@ export function getAllSorted(flex) {
 
   const flexQueue = [...flex];
   const result    = [];
+
+  // The top flex task is already the one the user is working on (it's what
+  // render() stamps calStartTime onto) — it must lead the list even if it
+  // wouldn't otherwise fit in the gap before the next scheduled task. Only
+  // applies when no scheduled task is currently active; an active scheduled
+  // task still takes precedence.
+  if (!active.length && flexQueue.length) {
+    const nowTask = flexQueue.shift();
+    result.push(nowTask);
+    cursor += nowTask.duration ?? DEFAULT_DUR;
+  }
 
   for (const sched of future) {
     let i = 0;
@@ -401,9 +412,10 @@ export function render() {
   if (moreCount)  moreCount.textContent = rest.length > 0 ? `(${rest.length})` : '';
   if (moreCards)  moreCards.innerHTML   = rest.map(t => renderCard(t, { inMore: true })).join('');
 
-  document.getElementById('doneList').innerHTML = state.doneTasks.length === 0
+  const doneToday = state.doneTasks.filter(t => isDoneToday(t.doneAt));
+  document.getElementById('doneList').innerHTML = doneToday.length === 0
     ? '<div class="empty-queue">Nothing completed yet</div>'
-    : state.doneTasks.map(t => `
+    : doneToday.map(t => `
         <div class="done-item">
           <span class="done-check">✓</span>
           <span class="done-title">${esc(t.title)}</span>
@@ -413,8 +425,8 @@ export function render() {
 
   const undoBtn = document.getElementById('titlebarUndoBtn');
   if (undoBtn) {
-    undoBtn.disabled = state.doneTasks.length === 0;
-    undoBtn.style.opacity = state.doneTasks.length === 0 ? '0.25' : '';
+    undoBtn.disabled = doneToday.length === 0;
+    undoBtn.style.opacity = doneToday.length === 0 ? '0.25' : '';
   }
 
   _hooks.updateBreakUI();

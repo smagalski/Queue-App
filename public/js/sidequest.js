@@ -1,6 +1,6 @@
 import { state } from './state.js';
 import { DEFAULT_DUR } from './constants.js';
-import { getPST, todayPstDateStr, fmtMins, msMinsToCalMins } from './utils.js';
+import { getPST, todayPstDateStr, fmtMins, msMinsToCalMins, esc } from './utils.js';
 import { save } from './persistence.js';
 import { render, isScheduled } from './render.js';
 import { markDoneById, openAddForm } from './taskactions.js';
@@ -161,4 +161,64 @@ export function endSidequest() {
 
   if (sqTask) markDoneById(sqTask.id);
   else { save(); render(); }
+}
+
+// ── Mini-Tasks ──────────────────────────────────────────────────────────────
+// A lightweight, title-only parking lot (state.miniTasks). Items sit idle
+// until "Started," at which point one is promoted straight into the Side
+// Quest flow above — no separate run/timer machinery needed.
+
+export function addMiniTask() {
+  const input = document.getElementById('minitaskInput');
+  const title = (input?.value || '').trim();
+  if (!title) return;
+  state.miniTasks.push({ id: Date.now(), title, addedAt: Date.now() });
+  if (input) input.value = '';
+  save();
+  renderMiniTasks();
+}
+
+export function removeMiniTask(id) {
+  state.miniTasks = state.miniTasks.filter(m => m.id !== id);
+  save();
+  renderMiniTasks();
+}
+
+export function startMiniTask(id) {
+  const mini = state.miniTasks.find(m => m.id === id);
+  if (!mini) return;
+  state.miniTasks = state.miniTasks.filter(m => m.id !== id);
+  renderMiniTasks();
+
+  // Same "what's currently NOW" snapshot openSidequest() takes, before
+  // pushing the new task or calling render() disturbs state.currentNowId.
+  const curId   = state.currentNowId;
+  const curTask = curId ? state.tasks.find(t => t.id === curId && !isScheduled(t) && !t._ab) : null;
+  _sqInterruptedId       = curTask ? curTask.id           : null;
+  _sqInterruptedCalStart = curTask ? curTask.calStartTime : null;
+
+  const flexOrder = state.tasks.filter(t => !isScheduled(t)).length;
+  const newTask = {
+    id: Date.now(), type: 'flex', title: mini.title,
+    priority: 3, duration: DEFAULT_DUR, addedAt: Date.now(), flexOrder,
+  };
+  state.tasks.push(newTask);
+  _startSidequest(newTask);
+}
+
+export function renderMiniTasks() {
+  const el = document.getElementById('minitaskList');
+  if (!el) return;
+  if (!state.miniTasks.length) {
+    el.innerHTML = '<div class="minitask-empty">No mini-tasks yet.</div>';
+    return;
+  }
+  el.innerHTML = state.miniTasks.map(m => `
+    <div class="minitask-row">
+      <span class="minitask-title">${esc(m.title)}</span>
+      <div class="minitask-actions">
+        <button class="minitask-start-btn" onclick="startMiniTask(${m.id})">Start</button>
+        <button class="minitask-delete-btn" onclick="removeMiniTask(${m.id})" title="Delete">✕</button>
+      </div>
+    </div>`).join('');
 }

@@ -1,6 +1,6 @@
 export const state = {
   // Task data
-  tasks: [], doneTasks: [], recurringTasks: [], categoryRules: [],
+  tasks: [], doneTasks: [], recurringTasks: [], categoryRules: [], miniTasks: [],
 
   // Firebase handles (set once on auth)
   db: null, auth: null, currentUser: null, stateDoc: null,

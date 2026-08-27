@@ -15,22 +15,13 @@ export const SCHED_COL = '#7ec8e3';
 
 export const CAT_TALLY_COLORS = ['#7ec8e3','#9863f3','#f0d060','#7fd4a8','#ffaa60','#ff6b8a'];
 
-export const STRESS_DEFAULTS = { hours: 6, volume: 2, urgency: 1 };
-
-export const APP_VERSION  = '0.3.0';
-export const APP_DEPLOYED = 'August 24, 2026';
+export const APP_VERSION  = '0.4.0';
+export const APP_DEPLOYED = 'August 27, 2026';
 export const APP_CHANGES  = [
-  'Fix: flex tasks no longer overlap scheduled tasks on the calendar',
-  'Fix: deleting a task now closes any dropdown left open on it',
-  'Fix: mobile sign-out no longer crashes to a blank screen',
-  'Fix: canceling "Add Sidequest" no longer turns the next task add into a sidequest',
-  'Fix: renaming a task from the calendar now updates the task list immediately',
-  "Fix: Day History now shows today's entry right after End Day",
-  'Fix: closing the wrap-up wizard now refreshes the task list',
-  'Fix: re-enabling sync no longer overwrites edits made while sync was off',
-  'Fix: Google Calendar import no longer creates duplicates on re-import',
-  'Fix: deleting a category no longer leaves tasks with a broken category badge',
-  'Sign-in approval check now auto-retries on transient network errors',
+  'Add the Mini-Tasks panel — quick-capture items like "call the dentist" that promote straight into a Side Quest with one click',
+  'Add a "Personal" category to the default category list',
+  'Add a "Restore Default Categories" button in Settings → Categories',
+  'Remove the Stress Score feature',
 ];
 
 export const GCAL_CLIENT_ID = '98725644783-jrc447s324kbmc1060c8ic5f7crm75js.apps.googleusercontent.com';
@@ -54,5 +45,8 @@ export const DEFAULT_CATEGORY_RULES = [
   { id: 'work',   name: 'Work',
     keywords: ['work','meeting','call','email','client','invoice','edit','shoot','review','submit',
                'schedule','film','record','prep','script','plan','produce','sync','pitch','budget','hire'] },
+  { id: 'personal', name: 'Personal',
+    keywords: ['personal','family','friend','birthday','doctor','dentist','workout','gym','read',
+               'hobby','self care','therapy','relax','date night','vacation','trip'] },
   { id: 'other',  name: 'Other', keywords: [] },
 ];

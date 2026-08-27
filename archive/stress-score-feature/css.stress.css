@@ -1,0 +1,108 @@
+/* Originally in public/css/app.css.
+   Two blocks: the settings-panel "Stress Score" controls, and the small
+   .edm-stress / .hdc-stress badges used in the End Day modal and Day History
+   cards. The .stress-overlay/.stress-modal/.stress-close-btn rules below were
+   already dead code before removal (a leftover from an earlier standalone
+   modal implementation, superseded by the settings-panel version) — harmless
+   to drop if re-implementing as a settings panel again. */
+
+/* ── STRESS WEIGHTS MODAL ───────────────────────────────────────────── */
+.stress-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9500;
+  background: rgba(0,0,0,0.75); align-items: center; justify-content: center;
+}
+.stress-overlay.active { display: flex; }
+.stress-modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 28px; width: 420px; max-width: 94vw;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.stress-modal-title {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text);
+}
+.stress-modal-sub {
+  font-size: 11px; color: var(--text-dim); margin-top: -12px; line-height: 1.5;
+}
+.stress-factor { display: flex; flex-direction: column; gap: 6px; }
+.stress-factor-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.stress-factor-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.stress-factor-desc { font-size: 10px; color: var(--text-dim); }
+.stress-factor-val {
+  font-size: 12px; font-weight: 700; color: var(--text-mid);
+  min-width: 24px; text-align: right;
+}
+.stress-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px; border-radius: 2px;
+  background: var(--border); outline: none; cursor: pointer;
+}
+.stress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+}
+.stress-modal-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 4px; border-top: 1px solid var(--border);
+}
+.stress-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-dim);
+  border-top: 1px solid var(--border); padding-top: 14px; margin-top: 2px;
+}
+.stress-cat-list { display: flex; flex-direction: column; gap: 5px; }
+.stress-cat-row {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 5px 0;
+}
+.stress-cat-row input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  width: 14px; height: 14px; flex-shrink: 0; cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.25); border-radius: 3px;
+  background: transparent; transition: all 0.15s; position: relative;
+}
+.stress-cat-row input[type="checkbox"]:checked {
+  background: var(--done-color); border-color: var(--done-color);
+}
+.stress-cat-row input[type="checkbox"]:checked::after {
+  content: ''; position: absolute;
+  left: 3px; top: 0px; width: 5px; height: 9px;
+  border: 2px solid #000; border-top: none; border-left: none;
+  transform: rotate(40deg);
+}
+.stress-cat-row span {
+  font-size: 13px; font-weight: 500; color: var(--text-main);
+  cursor: pointer; user-select: none; line-height: 1;
+}
+.stress-reset-btn {
+  font-size: 11px; color: var(--text-dim); background: none; border: none;
+  cursor: pointer; padding: 0; text-decoration: underline;
+}
+.stress-reset-btn:hover { color: var(--text); }
+.stress-close-btn {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); cursor: pointer; padding: 6px 16px;
+}
+.stress-close-btn:hover { background: rgba(255,255,255,0.14); }
+
+/* ── End Day modal stress block (part of the larger .edm-* rule set, which
+     was otherwise KEPT — only these three rules were removed) ──────────── */
+.edm-stress {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px 16px;
+}
+.edm-stress-score {
+  font-size: 36px; font-weight: 800; min-width: 48px; text-align: center;
+}
+.edm-stress-label { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+.edm-stress-desc  { font-size: 12px; color: var(--text-mid); font-weight: 600; }
+
+/* ── Day History card stress badge (part of the larger .hdc-* rule set,
+     which was otherwise KEPT — only this rule was removed) ─────────────── */
+.hdc-stress { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }

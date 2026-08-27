@@ -1,0 +1,70 @@
+<!-- Originally in public/index.html and public/mobile.html (identical in both) -->
+
+<!-- Sidebar tab button, between "Categories" and "Account": -->
+<button class="settings-tab" id="stab-stress" onclick="switchSettingsTab('stress')">Stress Score</button>
+
+<!-- Panel, between the Categories panel and the Account panel: -->
+<div class="settings-panel" id="settingsPanel-stress">
+  <div class="settings-panel-title">Stress Score Settings</div>
+  <div class="stress-modal-sub" style="margin-bottom:20px;">Adjust how much each factor contributes to your daily stress score. Changes apply immediately.</div>
+
+  <div class="stress-factor">
+    <div class="stress-factor-header">
+      <div>
+        <div class="stress-factor-name">Hours Worked</div>
+        <div class="stress-factor-desc">Total weighted time spent on tasks (heaviest factor by default)</div>
+      </div>
+      <div class="stress-factor-val" id="stressValHours">6</div>
+    </div>
+    <input type="range" class="stress-slider" id="stressSliderHours"
+      min="0" max="10" step="1" value="6"
+      oninput="onStressSlider('hours', this.value)">
+  </div>
+
+  <div class="stress-factor" style="margin-top:18px;">
+    <div class="stress-factor-header">
+      <div>
+        <div class="stress-factor-name">Task Volume</div>
+        <div class="stress-factor-desc">Number of tasks completed (weighted by category)</div>
+      </div>
+      <div class="stress-factor-val" id="stressValVolume">2</div>
+    </div>
+    <input type="range" class="stress-slider" id="stressSliderVolume"
+      min="0" max="10" step="1" value="2"
+      oninput="onStressSlider('volume', this.value)">
+  </div>
+
+  <div class="stress-factor" style="margin-top:18px;">
+    <div class="stress-factor-header">
+      <div>
+        <div class="stress-factor-name">Urgency</div>
+        <div class="stress-factor-desc">Proportion of high-priority tasks in your day</div>
+      </div>
+      <div class="stress-factor-val" id="stressValUrgency">1</div>
+    </div>
+    <input type="range" class="stress-slider" id="stressSliderUrgency"
+      min="0" max="10" step="1" value="1"
+      oninput="onStressSlider('urgency', this.value)">
+  </div>
+
+  <div class="stress-section-label" style="margin-top:24px;">Count towards score</div>
+  <div class="stress-cat-list" id="stressCatList"></div>
+
+  <div style="padding-top:20px;border-top:1px solid var(--border);margin-top:20px;">
+    <button class="stress-reset-btn" onclick="resetStressWeights()">Reset to default</button>
+  </div>
+</div>
+
+<!-- Also, in the End Day modal body (public/js/endday.js openEndDayModal()),
+     after the Priority Breakdown section: -->
+<div class="edm-stress">
+  <div class="edm-stress-score" style="color:COLOR">SCORE</div>
+  <div>
+    <div class="edm-stress-desc" style="color:COLOR">LABEL</div>
+    <div class="edm-stress-label">Stress score out of 10 — based on task urgency, volume, and hours worked.</div>
+  </div>
+</div>
+
+<!-- Also, in each Day History card (public/js/endday.js renderHistoryDay()),
+     in the .hdc-header next to the date: -->
+<div class="hdc-stress" style="background:COLOR22;color:COLOR">Stress SCORE/10 · LABEL</div>

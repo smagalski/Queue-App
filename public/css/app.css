@@ -140,6 +140,53 @@
   .task-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
   .task-panel > * { width: 100%; max-width: 480px; flex-shrink: 0; }
 
+  /* ── MINI-TASKS PANEL ─────────────────────────────────────────────────── */
+  .minitasks-panel {
+    width: 240px; flex-shrink: 0; overflow-y: auto; overflow-x: hidden;
+    padding: 20px 16px; display: flex; flex-direction: column; gap: 12px;
+    border-left: 1px solid var(--border);
+  }
+  .minitasks-panel-title {
+    font-weight: 700; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #fff;
+  }
+  .minitask-add-row { display: flex; gap: 6px; }
+  .minitask-add-row input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    color: #fff; font-family: 'Inter', sans-serif; font-size: 12px; padding: 8px 10px;
+    outline: none; transition: border-color 0.15s; min-width: 0;
+  }
+  .minitask-add-row input:focus { border-color: rgba(255,255,255,0.3); }
+  .minitask-add-row input::placeholder { color: var(--text-dim); }
+  .minitask-add-btn {
+    background: #fff; border: none; border-radius: 6px; color: #0b0a0f;
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+    width: 30px; flex-shrink: 0; cursor: pointer; transition: opacity 0.15s;
+  }
+  .minitask-add-btn:hover { opacity: 0.85; }
+  .minitask-empty { font-size: 11px; color: var(--text-dim); font-style: italic; }
+  .minitask-row {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .minitask-title {
+    font-size: 12px; color: var(--text-mid); flex: 1; min-width: 0;
+    overflow-wrap: break-word;
+  }
+  .minitask-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .minitask-start-btn {
+    background: none; border: 1px solid rgba(126,200,227,0.4); border-radius: 4px;
+    color: var(--sched); font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; cursor: pointer;
+    transition: all 0.12s; white-space: nowrap;
+  }
+  .minitask-start-btn:hover { background: rgba(126,200,227,0.14); border-color: rgba(126,200,227,0.65); }
+  .minitask-delete-btn {
+    background: none; border: none; color: var(--text-dim); font-size: 11px;
+    cursor: pointer; padding: 2px; transition: color 0.12s;
+  }
+  .minitask-delete-btn:hover { color: #fff; }
+  body.mobile-view .minitasks-panel { display: none; }
+
   .sec-hdr { font-weight: 700; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #fff; transition: color 0.3s; }
 
   /* ── TASK CARDS ───────────────────────────────────────────────────────── */
@@ -580,91 +627,6 @@
   .gear-menu-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
   .gear-menu-divider { height: 1px; background: var(--border); margin: 3px 0; }
 
-  /* ── STRESS WEIGHTS MODAL ───────────────────────────────────────────── */
-  .stress-overlay {
-    display: none; position: fixed; inset: 0; z-index: 9500;
-    background: rgba(0,0,0,0.75); align-items: center; justify-content: center;
-  }
-  .stress-overlay.active { display: flex; }
-  .stress-modal {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 28px; width: 420px; max-width: 94vw;
-    display: flex; flex-direction: column; gap: 20px;
-  }
-  .stress-modal-title {
-    font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--text);
-  }
-  .stress-modal-sub {
-    font-size: 11px; color: var(--text-dim); margin-top: -12px; line-height: 1.5;
-  }
-  .stress-factor { display: flex; flex-direction: column; gap: 6px; }
-  .stress-factor-header {
-    display: flex; justify-content: space-between; align-items: baseline;
-  }
-  .stress-factor-name { font-size: 12px; font-weight: 600; color: var(--text); }
-  .stress-factor-desc { font-size: 10px; color: var(--text-dim); }
-  .stress-factor-val {
-    font-size: 12px; font-weight: 700; color: var(--text-mid);
-    min-width: 24px; text-align: right;
-  }
-  .stress-slider {
-    -webkit-appearance: none; appearance: none;
-    width: 100%; height: 4px; border-radius: 2px;
-    background: var(--border); outline: none; cursor: pointer;
-  }
-  .stress-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #fff; cursor: pointer;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
-  }
-  .stress-modal-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    padding-top: 4px; border-top: 1px solid var(--border);
-  }
-  .stress-section-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-dim);
-    border-top: 1px solid var(--border); padding-top: 14px; margin-top: 2px;
-  }
-  .stress-cat-list { display: flex; flex-direction: column; gap: 5px; }
-  .stress-cat-row {
-    display: flex; align-items: center; gap: 8px; cursor: pointer;
-    padding: 5px 0;
-  }
-  .stress-cat-row input[type="checkbox"] {
-    appearance: none; -webkit-appearance: none;
-    width: 14px; height: 14px; flex-shrink: 0; cursor: pointer;
-    border: 1.5px solid rgba(255,255,255,0.25); border-radius: 3px;
-    background: transparent; transition: all 0.15s; position: relative;
-  }
-  .stress-cat-row input[type="checkbox"]:checked {
-    background: var(--done-color); border-color: var(--done-color);
-  }
-  .stress-cat-row input[type="checkbox"]:checked::after {
-    content: ''; position: absolute;
-    left: 3px; top: 0px; width: 5px; height: 9px;
-    border: 2px solid #000; border-top: none; border-left: none;
-    transform: rotate(40deg);
-  }
-  .stress-cat-row span {
-    font-size: 13px; font-weight: 500; color: var(--text-main);
-    cursor: pointer; user-select: none; line-height: 1;
-  }
-  .stress-reset-btn {
-    font-size: 11px; color: var(--text-dim); background: none; border: none;
-    cursor: pointer; padding: 0; text-decoration: underline;
-  }
-  .stress-reset-btn:hover { color: var(--text); }
-  .stress-close-btn {
-    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; background: rgba(255,255,255,0.08);
-    border: 1px solid var(--border); border-radius: 6px;
-    color: var(--text); cursor: pointer; padding: 6px 16px;
-  }
-  .stress-close-btn:hover { background: rgba(255,255,255,0.14); }
-
   /* ── APP DETAILS OVERLAY ────────────────────────────────────────────── */
   .app-details-overlay {
     display: none; position: fixed; inset: 0; z-index: 1100;
@@ -776,15 +738,6 @@
     padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600;
     letter-spacing: 0.06em; text-transform: uppercase;
   }
-  .edm-stress {
-    display: flex; align-items: center; gap: 14px;
-    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px 16px;
-  }
-  .edm-stress-score {
-    font-size: 36px; font-weight: 800; min-width: 48px; text-align: center;
-  }
-  .edm-stress-label { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
-  .edm-stress-desc  { font-size: 12px; color: var(--text-mid); font-weight: 600; }
   .edm-choice-row { display: flex; gap: 10px; margin-top: 4px; }
   .edm-choice-btn {
     flex: 1; padding: 10px 0; border-radius: 8px; border: 1px solid var(--border);
@@ -849,7 +802,6 @@
   }
   .hdc-header { display: flex; align-items: center; justify-content: space-between; }
   .hdc-date { font-size: 14px; font-weight: 700; color: #fff; }
-  .hdc-stress { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
   .hdc-tasks { display: flex; flex-direction: column; gap: 2px; }
   .hdc-task-row { display: flex; justify-content: space-between; font-size: 11px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .hdc-task-title { color: var(--text-mid); font-size: 10px; }

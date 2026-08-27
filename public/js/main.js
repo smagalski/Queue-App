@@ -39,7 +39,8 @@ import {
 } from './breaks.js';
 
 // sidequest
-import { openSidequest, endSidequest, _afterAddFlexTask, cancelSidequestPending } from './sidequest.js';
+import { openSidequest, endSidequest, _afterAddFlexTask, cancelSidequestPending,
+  addMiniTask, removeMiniTask, startMiniTask, renderMiniTasks } from './sidequest.js';
 
 // endday
 import {
@@ -55,8 +56,8 @@ import {
 // categories
 import {
   updateClock, renderCategoryTally,
-  onStressCatToggle, onStressSlider, resetStressWeights,
   renderCategoryManager, addCategoryKeyword, removeCategoryKeyword, addCategory, deleteCategory,
+  showConfirmRestoreCategories, hideConfirmRestoreCategories, restoreDefaultCategories,
   showConfirmClear7, hideConfirmClear7, showConfirmClearAll, hideConfirmClearAll,
   clearOldHistory, clearAllHistory,
 } from './categories.js';
@@ -97,7 +98,7 @@ import {
 // ── Wire hooks ─────────────────────────────────────────────────────────────
 
 // persistence ← render, updateTodayHistory, updateBreakTimer, updateBreakUI, loadBreakState, loadCalBounds, loadOverlayMode
-registerPersistenceHooks({ render, updateTodayHistory, updateBreakTimer, updateBreakUI, loadBreakState, loadCalBounds, loadOverlayMode, loadPanelWidth });
+registerPersistenceHooks({ render, renderMiniTasks, updateTodayHistory, updateBreakTimer, updateBreakUI, loadBreakState, loadCalBounds, loadOverlayMode, loadPanelWidth });
 
 // render ← renderCalendar, updateBreakUI
 setRenderHooks({ renderCalendar, updateBreakUI });
@@ -143,6 +144,7 @@ Object.assign(window, {
 
   // sidequest
   openSidequest, endSidequest,
+  addMiniTask, removeMiniTask, startMiniTask, renderMiniTasks,
 
   // endday
   openEndDayModal, closeEndDayModal,
@@ -154,8 +156,8 @@ Object.assign(window, {
 
   // categories
   updateClock, renderCategoryTally,
-  onStressCatToggle, onStressSlider, resetStressWeights,
   renderCategoryManager, addCategoryKeyword, removeCategoryKeyword, addCategory, deleteCategory,
+  showConfirmRestoreCategories, hideConfirmRestoreCategories, restoreDefaultCategories,
   openCategoryManager: () => openSettings('categories'),
   closeCategoryManager: () => closeSettings(),
   showConfirmClear7, hideConfirmClear7, showConfirmClearAll, hideConfirmClearAll,

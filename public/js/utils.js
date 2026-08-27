@@ -148,6 +148,12 @@ export function todayPstDateStr() {
   return `${p.getFullYear()}-${pad2(p.getMonth()+1)}-${pad2(p.getDate())}`;
 }
 
+export function isDoneToday(doneAt) {
+  if (!doneAt) return false;
+  const donePst = new Date(new Date(doneAt).toLocaleString('en-US', { timeZone: _tz() }));
+  return donePst.toDateString() === getPST().toDateString();
+}
+
 export function pad2(n) { return String(n).padStart(2, '0'); }
 
 export function fmtMins(m) {

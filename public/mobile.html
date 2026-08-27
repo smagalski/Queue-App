@@ -60,7 +60,6 @@
     <div class="settings-sidebar">
       <div class="settings-sidebar-title">Settings</div>
       <button class="settings-tab active" id="stab-categories" onclick="switchSettingsTab('categories')">Categories</button>
-      <button class="settings-tab" id="stab-stress" onclick="switchSettingsTab('stress')">Stress Score</button>
       <button class="settings-tab" id="stab-account" onclick="switchSettingsTab('account')">Account</button>
       <button class="settings-tab" id="stab-data" onclick="switchSettingsTab('data')">Data</button>
       <button class="settings-tab" id="stab-about" onclick="switchSettingsTab('about')">About</button>
@@ -79,57 +78,14 @@
                  onkeydown="if(event.key==='Enter')addCategory()"/>
           <button class="cat-mgr-new-btn" onclick="addCategory()">Add Category</button>
         </div>
-      </div>
 
-      <!-- Stress Score panel -->
-      <div class="settings-panel" id="settingsPanel-stress">
-        <div class="settings-panel-title">Stress Score Settings</div>
-        <div class="stress-modal-sub" style="margin-bottom:20px;">Adjust how much each factor contributes to your daily stress score. Changes apply immediately.</div>
-
-        <div class="stress-factor">
-          <div class="stress-factor-header">
-            <div>
-              <div class="stress-factor-name">Hours Worked</div>
-              <div class="stress-factor-desc">Total weighted time spent on tasks (heaviest factor by default)</div>
-            </div>
-            <div class="stress-factor-val" id="stressValHours">6</div>
+        <div class="settings-data-section" style="border-bottom:none; padding-bottom:0;">
+          <button class="settings-data-btn danger" onclick="showConfirmRestoreCategories()">Restore Default Categories</button>
+          <div class="settings-data-confirm" id="confirmRestoreCategories">
+            <div class="settings-data-confirm-text">This will replace all your categories and keywords with the defaults. <strong style="color:#fff;">This cannot be undone.</strong></div>
+            <button class="settings-data-confirm-yes" onclick="restoreDefaultCategories()">Restore Defaults</button>
+            <button class="settings-data-confirm-no" onclick="hideConfirmRestoreCategories()">Cancel</button>
           </div>
-          <input type="range" class="stress-slider" id="stressSliderHours"
-            min="0" max="10" step="1" value="6"
-            oninput="onStressSlider('hours', this.value)">
-        </div>
-
-        <div class="stress-factor" style="margin-top:18px;">
-          <div class="stress-factor-header">
-            <div>
-              <div class="stress-factor-name">Task Volume</div>
-              <div class="stress-factor-desc">Number of tasks completed (weighted by category)</div>
-            </div>
-            <div class="stress-factor-val" id="stressValVolume">2</div>
-          </div>
-          <input type="range" class="stress-slider" id="stressSliderVolume"
-            min="0" max="10" step="1" value="2"
-            oninput="onStressSlider('volume', this.value)">
-        </div>
-
-        <div class="stress-factor" style="margin-top:18px;">
-          <div class="stress-factor-header">
-            <div>
-              <div class="stress-factor-name">Urgency</div>
-              <div class="stress-factor-desc">Proportion of high-priority tasks in your day</div>
-            </div>
-            <div class="stress-factor-val" id="stressValUrgency">1</div>
-          </div>
-          <input type="range" class="stress-slider" id="stressSliderUrgency"
-            min="0" max="10" step="1" value="1"
-            oninput="onStressSlider('urgency', this.value)">
-        </div>
-
-        <div class="stress-section-label" style="margin-top:24px;">Count towards score</div>
-        <div class="stress-cat-list" id="stressCatList"></div>
-
-        <div style="padding-top:20px;border-top:1px solid var(--border);margin-top:20px;">
-          <button class="stress-reset-btn" onclick="resetStressWeights()">Reset to default</button>
         </div>
       </div>
 

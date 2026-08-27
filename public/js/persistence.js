@@ -5,6 +5,7 @@ import { todayPstDateStr, getPST, fmtMins, parseDateLocalMins, fmtTimePST, fmtTa
 // Hooks registered by main.js to break circular deps with render/breaks/endday
 const _hooks = {
   render: () => {},
+  renderMiniTasks: () => {},
   updateTodayHistory: () => {},
   updateBreakTimer: () => {},
   updateBreakUI: () => {},
@@ -52,6 +53,7 @@ export function save() {
       doneTasks: state.doneTasks,
       recurringTasks: state.recurringTasks,
       categoryRules: state.categoryRules,
+      miniTasks: state.miniTasks,
       breakStartMs: state.breakStartMs || null,
       breakTaskId:  state.breakTaskId  || null,
     })
@@ -70,6 +72,7 @@ export function load() {
   try { state.doneTasks = JSON.parse(localStorage.getItem(uid ? `q_done_${uid}`  : 'q_done')  || '[]'); } catch(e){ state.doneTasks=[]; }
   purgeDone();
   _hooks.render();
+  _hooks.renderMiniTasks();
   _hooks.loadPanelWidth();
 
   if (!state.stateDoc || !state.syncEnabled) {
@@ -84,14 +87,15 @@ export function load() {
   if (state.unsubscribeSnapshot) state.unsubscribeSnapshot();
   state.unsubscribeSnapshot = state.stateDoc.onSnapshot(snap => {
     if (!snap.exists) {
-      state.tasks = []; state.doneTasks = []; state.recurringTasks = [];
-      setSyncStatus('synced'); _hooks.render(); return;
+      state.tasks = []; state.doneTasks = []; state.recurringTasks = []; state.miniTasks = [];
+      setSyncStatus('synced'); _hooks.render(); _hooks.renderMiniTasks(); return;
     }
     const data = snap.data();
     state.tasks          = data.tasks          || [];
     state.doneTasks      = data.doneTasks      || [];
     state.recurringTasks = data.recurringTasks || [];
     state.categoryRules  = data.categoryRules  || [];
+    state.miniTasks      = data.miniTasks      || [];
     if (!state.categoryRules.length) {
       state.categoryRules = JSON.parse(JSON.stringify(DEFAULT_CATEGORY_RULES));
       setTimeout(() => save(), 0);
@@ -107,6 +111,7 @@ export function load() {
     injectRecurringTasks();
     setSyncStatus('synced');
     _hooks.render();
+    _hooks.renderMiniTasks();
 
     // Sync break overlay from Firestore (works on refresh + cross-window)
     const breakTask = state.tasks.find(t => t.isBreak && !t._ab);

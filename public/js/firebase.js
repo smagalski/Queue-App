@@ -4,7 +4,7 @@ import { renderClockDisplay } from './utils.js';
 import { esc } from './utils.js';
 import { setSyncStatus, load, save } from './persistence.js';
 import { render } from './render.js';
-import { renderCategoryManager, getStressWeights, _renderStressCatList } from './categories.js';
+import { renderCategoryManager } from './categories.js';
 import { checkDayOffFirestore, checkDayEndedFirestore } from './endday.js';
 import { maybeShowGcalDailyPrompt } from './gcal.js';
 import { checkPreviousDayWrapUp } from './wrapup.js';
@@ -277,14 +277,6 @@ export function switchSettingsTab(tab) {
   if (tab === 'categories') {
     if (!state.categoryRules.length) state.categoryRules = JSON.parse(JSON.stringify(DEFAULT_CATEGORY_RULES));
     renderCategoryManager();
-  } else if (tab === 'stress') {
-    const w = getStressWeights();
-    ['hours', 'volume', 'urgency'].forEach(k => {
-      const key = k.charAt(0).toUpperCase() + k.slice(1);
-      document.getElementById('stressSlider' + key).value = w[k];
-      document.getElementById('stressVal'    + key).textContent = w[k];
-    });
-    _renderStressCatList();
   } else if (tab === 'account') {
     _populateAccountPanel();
   } else if (tab === 'about') {
