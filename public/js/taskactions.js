@@ -281,9 +281,12 @@ export function addTask() {
   });
   const newTask = state.tasks[state.tasks.length - 1];
   checkAdd();
-  save(); closeAddForm();
+  save();
   render();
+  // Run before closeAddForm(): closing fires cancelSidequestPending(), which
+  // would otherwise clear the pending flag before this hook gets to check it.
   _afterAddHook(newTask);
+  closeAddForm();
 }
 
 // ── Scheduled task form ────────────────────────────────────────────────────

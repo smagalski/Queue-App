@@ -15,13 +15,11 @@ export const SCHED_COL = '#7ec8e3';
 
 export const CAT_TALLY_COLORS = ['#7ec8e3','#9863f3','#f0d060','#7fd4a8','#ffaa60','#ff6b8a'];
 
-export const APP_VERSION  = '0.4.0';
+export const APP_VERSION  = '0.4.1';
 export const APP_DEPLOYED = 'August 27, 2026';
 export const APP_CHANGES  = [
-  'Add the Mini-Tasks panel — quick-capture items like "call the dentist" that promote straight into a Side Quest with one click',
-  'Add a "Personal" category to the default category list',
-  'Add a "Restore Default Categories" button in Settings → Categories',
-  'Remove the Stress Score feature',
+  'Fix: starting a Sidequest no longer silently adds a plain flex task instead of opening the full-screen timer',
+  'The Start Sidequest button is now pink to match the rest of the Sidequest flow',
 ];
 
 export const GCAL_CLIENT_ID = '98725644783-jrc447s324kbmc1060c8ic5f7crm75js.apps.googleusercontent.com';
